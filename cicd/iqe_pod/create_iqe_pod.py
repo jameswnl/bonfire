@@ -178,18 +178,73 @@ def _build_test_conf(env_parser):
             )
 
     if env_parser.app_present("automation-analytics"):
-        env_conf["automation-analytics"] = {
+        env_conf["main"] = {
+            "hostname": "front-end-aggregator:8080",
+            "path": "/",
+            "api_path": "api",
+            "scheme": "https",
+            "ssl_verify": "false",
+            "default_user": "primary_user",
+        }
+        env_conf["http"] = {
+            "oauth_base_url": "https://keycloak:8080/auth/realms/redhat-external/protocol/openid-connect",
+            "oauth_client_id": "cloud-services",
+            "oauth_redirect_url": "https://front-end-aggregator:8080/insights/",
+            "default_auth_type": "jwt",
+            "cacert_path": "false",
+        }
+        env_conf["users"] = {
+            "primary_user": {
+                "identity": {
+                    "account_number": "0369234",
+                    "type": "User",
+                    "auth_type": "basic-auth",
+		            "user": {
+                        "username": "jdoe",
+                        "email": "jdoe@acme.com",
+                        "first_name": "John",
+                        "last_name": "Doe",
+                        "is_active": "true",
+                        "is_org_admin": "false",
+                        "is_internal": "false",
+                        "locale": "en_US",
+                    },
+                    "internal": {
+                        "org_id": "3340852",
+                        "auth_time": "6300",
+                    }
+                },
+	            "entitlements": {
+	               "hybrid_cloud": {
+	                   "is_entitled": "true",
+                   },
+	               "insights": {
+	                   "is_entitled": "true",
+                   },
+	               "openshift": {
+	                   "is_entitled": "true",
+                   },
+	               "smart_management": {
+	                   "is_entitled": "true",
+                   },
+                }
+	        }
+        }
+        env_conf["automation_analytics"] = {
             "service_objects": {
                 "api_v1": {
                     "config": {
-                        "hostname": env_parser.get_hostname("automation-analytics", "automation-analytics-api"),
-                        "port": env_parser.get_port("automation-analytics", "automation-analytics-api"),
+                        "hostname": env_parser.get_hostname(
+                            "automation-analytics", "automation-analytics-api"
+                        ),
+                        "port": env_parser.get_port(
+                            "automation-analytics", "automation-analytics-api"
+                        ),
                         "scheme": "http",
                     }
                 }
             }
         }
-
     return conf
 
 
